@@ -1,0 +1,38 @@
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int n = coins.length;
+        
+	    int[][] dp = new int[n][amount+1]; //dp array with seixe n and amount+1
+	    
+        for(int[] ar: dp){
+		Arrays.fill(ar, -1); //as per memoization, filling array dp with -1
+        }
+        
+        int ans = helper(n-1, amount, coins, dp); //calling the helper 
+	   
+        if(ans >= (int)1e7) return -1; //if ans is more than 100000
+	      return ans;// 
+    }
+    static int helper(int index,int target,int[] coins,int dp[][])
+    {
+        if(index==0)  // base case
+        {
+            if(target%coins[index] == 0) // ex:- amount = 18, coins = {5}. one will never able to get coin denominations of 5 to get amount 18, so we need to check for amount % coins[index]==0
+                return target / coins[index];
+             else 
+                return (int)1e7;
+        }
+        if(dp[index][target] != -1) // check we have computed value previously or not
+            return dp[index][target];
+        
+        int nottake=0+helper(index-1,target,coins,dp); //possibilities that one dont pick the coin
+        
+        int take = Integer.MAX_VALUE;
+        
+        if(coins[index] <= target){ //coin value should be lesser than amount, then only below step
+           take = 1 + helper(index,target-coins[index],coins,dp);
+        }
+        
+        return dp[index][target] = Math.min(nottake, take); //return min coin denomination
+    }
+}
